@@ -56,5 +56,5 @@ function addToInput(num) {}
 
 //add to display value
 function addToDisplay(value) {
-  display.textContent += value;
+  display.textContent === '0' ? (display.textContent = value) : (display.textContent += value);
 }
