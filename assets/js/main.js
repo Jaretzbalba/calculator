@@ -3,6 +3,7 @@ let firstOperand = '';
 let secondOperand = '';
 let currentOperation = null;
 let shouldResetScreen = false;
+let makePercentage = false;
 
 const display = document.getElementById('display');
 const numberBtns = document.querySelectorAll('.number');
@@ -40,6 +41,7 @@ decimalBtn.addEventListener('click', addDecimal);
 equalBtn.addEventListener('click', evaluate);
 clearBtn.addEventListener('click', clear);
 changeSignBtn.addEventListener('click', changeSign);
+percentBtn.addEventListener('click', percentage);
 
 // BUTTON FUNCTIONS
 // add
@@ -77,6 +79,9 @@ function operate(operator, a, b) {
 // clear
 function clear() {
   display.textContent = '0';
+  firstOperand = '';
+  secondOperand = '';
+  currentOperation = null;
 }
 
 // add decimal
@@ -90,15 +95,32 @@ function changeSign() {
   display.textContent = `${display.textContent * -1}`;
 }
 
+// percentage
+function percentage() {
+  makePercentage = true;
+  console.log(currentOperation);
+  if (currentOperation !== null) {
+    secondOperand = display.textContent;
+    display.textContent = `${(firstOperand * secondOperand) / 100}`;
+  } else {
+    display.textContent = `${display.textContent / 100}`;
+  }
+}
+
 // reset screen
 function resetScreen() {
   display.textContent = '';
   shouldResetScreen = false;
 }
 
+//round value
+function round(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
 // set Operation
 function setOperation(operator) {
-  if (currentOperation !== null) evaluate();
+  // if (currentOperation !== null) evaluate();
   firstOperand = display.textContent;
   currentOperation = operator;
   shouldResetScreen = true;
@@ -111,8 +133,11 @@ function evaluate() {
     alert("You can't divide by 0!");
     return;
   }
+  if (shouldResetScreen && makePercentage) {
+    display.textContent = `${firstOperand - (firstOperand * secondOperand) / 100}`;
+  }
   secondOperand = display.textContent;
-  display.textContent = operate(currentOperation, firstOperand, secondOperand);
+  display.textContent = round(operate(currentOperation, firstOperand, secondOperand));
   currentOperation = null;
   console.log('sucess');
 }
@@ -126,7 +151,7 @@ function addToDisplay(value) {
     subractBtn.classList.remove('active');
     addBtn.classList.remove('active');
   }
-  display.textContent === '0' ? (display.textContent = value) : (display.textContent += value);
+  display.textContent += value;
 }
 
 function chooseOperator(operatorChoice) {
